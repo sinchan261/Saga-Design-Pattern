@@ -18,8 +18,8 @@ public class CreatedOrderResponse {
     @NonNull
     private UUID productId;
     @NonNull
-    private UUID orderId;
-    private OrderStatus orderStatus;
+    private UUID id;
+    private OrderStatus status;
     private Integer productQuantity;
 
 }
