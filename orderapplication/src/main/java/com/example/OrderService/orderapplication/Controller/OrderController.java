@@ -5,10 +5,12 @@ import com.example.OrderService.orderapplication.Dto.CreatedOrderRequest;
 import com.example.OrderService.orderapplication.Dto.CreatedOrderResponse;
 import com.example.OrderService.orderapplication.Dto.OrderHistory;
 import com.example.OrderService.orderapplication.Dto.OrderHistoryResponse;
+import com.example.OrderService.orderapplication.Repository.OrderHistoryRepository;
 import com.example.OrderService.orderapplication.ServiceImplmentation.OrderHistoryServiceImpl;
 import com.example.OrderService.orderapplication.ServiceImplmentation.OrderServiceImple;
 import com.example.OrderService.orderapplication.ServiceInterface.OrderService;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -21,10 +23,14 @@ import java.util.UUID;
 public class OrderController {
     @Autowired
     OrderServiceImple orderServiceImple;
+
     @Autowired
     ModelMapper modelMapper;
-//    @Autowired
-//    OrderHistoryServiceImpl orderServiceImpl;
+    @Autowired
+    OrderHistoryServiceImpl orderHistoryServiceImpl;
+    @Autowired
+    private OrderHistoryRepository orderHistoryRepository;
+
     @PostMapping
     public CreatedOrderResponse placeorder(@RequestBody CreatedOrderRequest createdOrderRequest){
         Order order = new Order();
@@ -36,9 +42,13 @@ public class OrderController {
 
     }
 
-//    @GetMapping("/{orderId}/history")
-//    @ResponseStatus(HttpStatus.ok)
-//    public List<OrderHistoryResponse> getOrderHistory(@PathVariable UUID orderId){
-//
-//    }
+    @GetMapping("/{orderId}/history")
+    @ResponseStatus(HttpStatus.OK)
+    public List<OrderHistoryResponse> getOrderHistory(@PathVariable UUID orderId){
+return orderHistoryServiceImpl.findByOrderId(orderId).stream().map(orderHistory -> {
+    OrderHistoryResponse orderHistoryRepository = new OrderHistoryResponse();
+    BeanUtils.copyProperties(orderHistory,orderHistoryRepository);
+    return orderHistoryRepository;
+}).toList();
+    }
 }

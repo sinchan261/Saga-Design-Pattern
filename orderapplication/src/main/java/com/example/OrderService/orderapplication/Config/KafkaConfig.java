@@ -45,7 +45,7 @@ public class KafkaConfig {
         config.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG,environment.getProperty("spring.kafka.producer.properties.enable.idempotence"));
                         return config;
     }
-//    orders.events.topic.name=orders-events
+//  orders.events.topic.name=orders-events
     @Bean
     ProducerFactory producerFactory(){
         return new DefaultKafkaProducerFactory(Configuration());
