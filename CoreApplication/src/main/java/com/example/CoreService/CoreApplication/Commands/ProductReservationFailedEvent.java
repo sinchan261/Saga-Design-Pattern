@@ -1,4 +1,4 @@
-package com.example.CoreService.CoreApplication.Events;
+package com.example.CoreService.CoreApplication.Commands;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,11 +9,12 @@ import java.util.UUID;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class OrderCreatedEvents {
-    private UUID orderId;
-    private UUID customerId;
+@NoArgsConstructor
+public class ProductReservationFailedEvent {
+
     private UUID productId;
+    private UUID orderId;
     private Integer productQuantity;
+
 }

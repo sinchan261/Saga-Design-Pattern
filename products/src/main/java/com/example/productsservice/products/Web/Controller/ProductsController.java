@@ -7,6 +7,7 @@ import com.example.productsservice.products.Services.ProductServiceImpl;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/products")
 @Getter
@@ -21,10 +23,6 @@ import java.util.List;
 public class ProductsController {
     @Autowired
     private ProductServiceImpl productService;
-
-    public ProductsController(ProductServiceImpl productService) {
-        this.productService = productService;
-    }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
@@ -35,6 +33,7 @@ public class ProductsController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ProductCreationResponse save(@RequestBody  ProductCreationRequest request) {
+        log.info("The products is s{}",request);
         var product = new Product();
         BeanUtils.copyProperties(request, product);
         Product result = productService.save(product);

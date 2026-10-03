@@ -2,6 +2,7 @@ package com.example.OrderService.orderapplication.ServiceImplmentation;
 
 import com.example.CoreService.CoreApplication.Dao.Order;
 import com.example.CoreService.CoreApplication.Enumes.OrderStatus;
+import com.example.CoreService.CoreApplication.Events.OrderCreatedEvents;
 import com.example.OrderService.orderapplication.Repository.OrderRepository;
 import com.example.OrderService.orderapplication.ServiceInterface.OrderService;
 import com.example.OrderService.orderapplication.entity.OrderEntity;
@@ -12,21 +13,49 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.UUID;
 @Slf4j
 @Service
 public class OrderServiceImple implements OrderService {
     @Autowired
+    Environment environment;
+    @Autowired
     OrderRepository orderRepository;
+    @Autowired
+    KafkaTemplate<String, Object> kafkaTemplate;
     @Autowired
     ModelMapper modelMapper;
     @Override
+//    public class Order {
+//        private UUID id;
+//        private UUID customerId;
+//        private UUID productId;
+//        private Integer productQuantity;
+//        private OrderStatus status;
+//    }
+
     public Order placeOrder(Order order) {
         OrderEntity orderEntity = modelMapper.map(order,OrderEntity.class);
+        orderEntity.setStatus(OrderStatus.CREATED);
         log.info("log of order entity is {}",orderEntity.getCustomerId());
+
+
+// store the orders into database
         orderRepository.save(orderEntity);
+
+//        publish a event for oreder created
+        OrderCreatedEvents placeholder = new OrderCreatedEvents(orderEntity.getId(),
+orderEntity.getCustomerId(),orderEntity.getProductId(),orderEntity.getProductQuantity());
+
+        kafkaTemplate.send(environment.getProperty("orders.events.topic.name"),placeholder);
+
+
+
         Order order1 = modelMapper.map(orderEntity,Order.class);
         return  order1;
     }

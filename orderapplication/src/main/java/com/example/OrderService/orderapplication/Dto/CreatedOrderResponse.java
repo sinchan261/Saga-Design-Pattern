@@ -1,6 +1,8 @@
 package com.example.OrderService.orderapplication.Dto;
 
 import com.example.CoreService.CoreApplication.Enumes.OrderStatus;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,6 +21,7 @@ public class CreatedOrderResponse {
     private UUID productId;
     @NonNull
     private UUID id;
+    @Enumerated(EnumType.STRING)
     private OrderStatus status;
     private Integer productQuantity;
 

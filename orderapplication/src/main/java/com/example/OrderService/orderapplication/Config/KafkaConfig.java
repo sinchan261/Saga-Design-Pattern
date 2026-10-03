@@ -18,6 +18,7 @@ package com.example.OrderService.orderapplication.Config;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -33,6 +34,10 @@ public class KafkaConfig {
     @Autowired
     Environment environment;
 
+    @Value("${products.commands.topic.name}")
+    private  String productCommandsTopicName;
+    @Value("${payment.commands.topic.name}")
+    private String paymentCommandTopicName;
     Map<String,Object> Configuration(){
         Map<String,Object> config = new HashMap<>();
         config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,environment.getProperty("spring.kafka.bootstrap-servers"));
@@ -58,5 +63,20 @@ public class KafkaConfig {
     NewTopic createNewTopic(){
         return TopicBuilder.name(environment.getProperty("orders.events.topic.name"))
                 .replicas(3).partitions(3).configs(Map.of("min-insync.replicas","2")).build();
+    }
+    @Bean
+    NewTopic createProductsCommandsTopic(){
+        return TopicBuilder.name(productCommandsTopicName)
+                .partitions(3)
+                .replicas(3).configs(Map.of("min-insync.replicas","2")).build();
+    }
+
+    @Bean
+    NewTopic createPaymentCommandsTopic(){
+        return TopicBuilder.name(paymentCommandTopicName)
+                .replicas(3).partitions(3)
+                .configs(Map.of("min-insync.replicas","2")).build();
+
+
     }
 }

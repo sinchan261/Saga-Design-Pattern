@@ -6,11 +6,13 @@ import com.example.productsservice.products.Dao.Jpa.Entity.ProductEntity;
 import com.example.productsservice.products.Dao.Jpa.repository.ProductRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Service
 public class ProductServiceImpl {
     @Autowired
     private final ProductRepository productRepository;
@@ -18,6 +20,8 @@ public class ProductServiceImpl {
     public ProductServiceImpl(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
+
+
     public Product reserve(Product desiredProduct, UUID orderId) {
         ProductEntity productEntity = productRepository.findById(desiredProduct.getId()).orElseThrow();
         if (desiredProduct.getQuantity() > productEntity.getQuantity()) {

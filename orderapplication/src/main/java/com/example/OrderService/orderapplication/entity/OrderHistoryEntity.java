@@ -20,6 +20,7 @@ public class OrderHistoryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+    @Enumerated(EnumType.STRING)
     private OrderStatus status;
     private UUID orderId;
     private Timestamp createdAt;

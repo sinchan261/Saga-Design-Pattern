@@ -37,8 +37,11 @@ public class OrderController {
                 order.setCustomerId(createdOrderRequest.getCustomerId());
         order.setProductId(createdOrderRequest.getProductId());
         order.setProductQuantity(createdOrderRequest.getProductQuantity());
+
         Order order1 = orderServiceImple.placeOrder(order);
-      return   modelMapper.map(order1,CreatedOrderResponse.class);
+        var response = new CreatedOrderResponse();
+        BeanUtils.copyProperties(order1, response);
+      return  response;
 
     }
 

@@ -4,6 +4,8 @@ import com.example.CoreService.CoreApplication.Enumes.OrderStatus;
 import com.example.OrderService.orderapplication.Dto.OrderHistory;
 import com.example.OrderService.orderapplication.Repository.OrderHistoryRepository;
 import com.example.OrderService.orderapplication.entity.OrderHistoryEntity;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,18 +15,21 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
+@AllArgsConstructor
 public class OrderHistoryServiceImpl {
     @Autowired
-    private    OrderHistoryRepository orderHistoryRepository;
+    private OrderHistoryRepository orderHistoryRepository;
 //    @Autowired
 //
      public  void add(UUID orderId, OrderStatus orderStatus){
          OrderHistoryEntity orderHistoryEntity = new OrderHistoryEntity();
          orderHistoryEntity.setOrderId(orderId);
          orderHistoryEntity.setStatus(orderStatus);
+         log.info("hello{}",orderHistoryEntity.getStatus());
          orderHistoryEntity.setCreatedAt(new Timestamp(new Date().getTime()));
-
+         orderHistoryRepository.save(orderHistoryEntity);
      }
 //     it returns the list of order using orderId
      public List<OrderHistory> findByOrderId(UUID orderId){

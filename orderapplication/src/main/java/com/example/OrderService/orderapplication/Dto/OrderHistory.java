@@ -1,6 +1,8 @@
 package com.example.OrderService.orderapplication.Dto;
 
 import com.example.CoreService.CoreApplication.Enumes.OrderStatus;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,6 +18,7 @@ import java.util.UUID;
 public class OrderHistory {
     private UUID id;
     private UUID orderId;
-    private OrderStatus orderStatus;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
     private Timestamp createdAt;
 }

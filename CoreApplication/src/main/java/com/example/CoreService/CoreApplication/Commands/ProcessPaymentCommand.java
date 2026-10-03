@@ -1,19 +1,20 @@
-package com.example.CoreService.CoreApplication.Events;
+package com.example.CoreService.CoreApplication.Commands;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class OrderCreatedEvents {
+@NoArgsConstructor
+public class ProcessPaymentCommand {
     private UUID orderId;
-    private UUID customerId;
     private UUID productId;
+    private BigDecimal productPrice;
     private Integer productQuantity;
 }

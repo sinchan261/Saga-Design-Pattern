@@ -20,6 +20,7 @@ public class OrderEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+    @Enumerated(EnumType.STRING)
     private OrderStatus status;
     private UUID customerId;
     private Integer productQuantity;
