@@ -38,6 +38,8 @@ public class KafkaConfig {
     private  String productCommandsTopicName;
     @Value("${payment.commands.topic.name}")
     private String paymentCommandTopicName;
+    @Value("${order.commands.topic.name}")
+    private String OrdersCommandTopicName;
     Map<String,Object> Configuration(){
         Map<String,Object> config = new HashMap<>();
         config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,environment.getProperty("spring.kafka.bootstrap-servers"));
@@ -74,6 +76,15 @@ public class KafkaConfig {
     @Bean
     NewTopic createPaymentCommandsTopic(){
         return TopicBuilder.name(paymentCommandTopicName)
+                .replicas(3).partitions(3)
+                .configs(Map.of("min-insync.replicas","2")).build();
+
+
+    }
+
+    @Bean
+    NewTopic createOrderCommandsTopic(){
+        return TopicBuilder.name(OrdersCommandTopicName)
                 .replicas(3).partitions(3)
                 .configs(Map.of("min-insync.replicas","2")).build();
 

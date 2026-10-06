@@ -36,11 +36,12 @@ public class ProductServiceImpl {
         reservedProduct.setQuantity(desiredProduct.getQuantity());
         return reservedProduct;
     }
+
     public void cancelReservation(Product productToCancel, UUID orderId) {
         ProductEntity productEntity = productRepository.findById(productToCancel.getId()).orElseThrow();
         productEntity.setQuantity(productEntity.getQuantity() + productToCancel.getQuantity());
         productRepository.save(productEntity);
-    }
+               }
     public Product save(Product product) {
         ProductEntity productEntity = new ProductEntity();
         productEntity.setName(product.getName());

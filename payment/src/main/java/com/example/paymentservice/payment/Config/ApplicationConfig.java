@@ -6,9 +6,8 @@ import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class ApplicationConfig {
-//    @Bean
-//    public RestClient restClient2(RestClient restClient) {
-//
-//        return RestClient.builder().build();
-//    }
+    @Bean
+    public RestClient restClient() {
+        return RestClient.builder().build();
+    }
 }

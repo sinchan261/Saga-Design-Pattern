@@ -7,11 +7,12 @@ package com.example.OrderService.orderapplication.Saga;
 //in the correct order
 
 
-import com.example.CoreService.CoreApplication.Commands.ProcessPaymentCommand;
-import com.example.CoreService.CoreApplication.Commands.ProductReservedEvent;
-import com.example.CoreService.CoreApplication.Commands.ReserveProductCommand;
+import com.example.CoreService.CoreApplication.Commands.*;
 import com.example.CoreService.CoreApplication.Enumes.OrderStatus;
+import com.example.CoreService.CoreApplication.Events.OrderAppprovedEvents;
 import com.example.CoreService.CoreApplication.Events.OrderCreatedEvents;
+import com.example.CoreService.CoreApplication.Events.PaymentFailEvent;
+import com.example.CoreService.CoreApplication.Events.PaymentProcessEvents;
 import com.example.OrderService.orderapplication.ServiceImplmentation.OrderHistoryServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,8 @@ import java.util.UUID;
 
 @Component
 @KafkaListener(topics= {"${orders.events.topic.name}",
-        "${products.events.topic.name}"
+        "${products.events.topic.name}",
+        "${payment.events.topic.name}"
 })
 
 public class OrderSaga {
@@ -35,6 +37,8 @@ public class OrderSaga {
     private  String productCommandsTopicName;
     @Value("${payment.commands.topic.name}")
     private String paymentCommandTopicName;
+    @Value("${order.commands.topic.name}")
+    private String orderCommandTopicName;
     @Autowired
     KafkaTemplate<String,Object> kafkaTemplate;
 
@@ -65,5 +69,37 @@ public void handleEvent(OrderCreatedEvents orderCreatedEvents){
                         productReservedEvent.getProductPrice(), productReservedEvent.getProductQuantity());
 
         kafkaTemplate.send(paymentCommandTopicName,processPaymentCommand);
+    }
+
+
+    @KafkaHandler
+    public void handleEvent(PaymentProcessEvents paymentProcessEvents){
+        ApproveOrderCommands approveOrderCommands  = new
+                ApproveOrderCommands(paymentProcessEvents.getOrderId());
+        kafkaTemplate.send(orderCommandTopicName,approveOrderCommands);
+    }
+    @KafkaHandler
+    public void handleEvent(OrderAppprovedEvents orderAppprovedEvents){
+        orderHistoryService.add(orderAppprovedEvents.getOrderId(),OrderStatus.APPROVED);
+    }
+
+    @KafkaHandler
+    public void handleEvent(PaymentFailEvent event){
+        CancelProductReservtionCommand cancelProductReservtionCommand
+                = new CancelProductReservtionCommand(event.getProductId()
+                ,event.getOrderId(),
+                event.getProductQuantity());
+           kafkaTemplate.send(productCommandsTopicName,cancelProductReservtionCommand);
+
+    }
+
+    @KafkaHandler
+    public void handleEvent( ProductReservationCancelledEvent productReservationCancelledEvent){
+           RejectOrderCommand rejectOrderCommand =
+                   new RejectOrderCommand(productReservationCancelledEvent.getOrderId());
+           kafkaTemplate.send(orderCommandTopicName,rejectOrderCommand);
+           orderHistoryService.add(productReservationCancelledEvent.getOrderId(),
+                   OrderStatus.REJECTED
+                   );
     }
 }

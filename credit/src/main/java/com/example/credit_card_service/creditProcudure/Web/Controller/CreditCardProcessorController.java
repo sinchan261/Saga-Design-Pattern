@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("ccp")
+@RequestMapping("/ccp")
 public class CreditCardProcessorController {
     private static final Logger LOGGER = LoggerFactory.getLogger(CreditCardProcessorController.class);
 

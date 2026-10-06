@@ -22,6 +22,9 @@ public class CreditCardProcessorRemoteServiceImple {
 
     private RestClient restClient;
 
+    public CreditCardProcessorRemoteServiceImple(RestClient restClient) {
+        this.restClient = restClient;
+    }
 
 
     public void process(BigInteger cardNumber, BigDecimal paymentAmount){

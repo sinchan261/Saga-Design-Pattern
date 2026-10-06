@@ -1,15 +1,17 @@
-package com.example.CoreService.CoreApplication.Events;
+package com.example.CoreService.CoreApplication.Commands;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.UUID;
+
 @Getter
 @Setter
+@AllArgsConstructor
 @NoArgsConstructor
-public class PaymentFailEvent {
+public class RejectOrderCommand {
     private UUID orderId;
-    private UUID productId;
-    private Integer productQuantity;
+
 }

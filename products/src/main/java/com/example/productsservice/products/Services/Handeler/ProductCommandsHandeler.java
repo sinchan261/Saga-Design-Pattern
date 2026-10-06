@@ -1,8 +1,6 @@
 package com.example.productsservice.products.Services.Handeler;
 
-import com.example.CoreService.CoreApplication.Commands.ProductReservationFailedEvent;
-import com.example.CoreService.CoreApplication.Commands.ProductReservedEvent;
-import com.example.CoreService.CoreApplication.Commands.ReserveProductCommand;
+import com.example.CoreService.CoreApplication.Commands.*;
 import com.example.CoreService.CoreApplication.Dao.Product;
 import com.example.productsservice.products.Services.ProductServiceImpl;
 import lombok.extern.slf4j.Slf4j;
@@ -52,7 +50,21 @@ public class ProductCommandsHandeler {
                          reserveProductCommand.getOrderId(),reserveProductCommand.getProductQuantity());
          kafkaTemplate.send(productEventsTopicName,productReservationFailedEvent);
 
-
      }
  }
+
+ @KafkaHandler
+    public void handleCommand(CancelProductReservtionCommand command){
+        Product productToCancel = new Product(
+             command.getProductId(),
+             command.getProductQuantity()
+        );
+        productService.cancelReservation(productToCancel,command.getOrderId());
+
+     ProductReservationCancelledEvent productReservationCancelledEvent = new
+             ProductReservationCancelledEvent(command.getProductId(),command.getOrderId());
+     kafkaTemplate.send(productEventsTopicName,productReservationCancelledEvent);
+ }
+
+
 }
